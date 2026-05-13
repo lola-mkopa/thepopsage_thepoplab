@@ -142,7 +142,7 @@ app.post('/api/chat', async (req, res) => {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1000,
         system: systemPrompt,
         messages
@@ -155,7 +155,12 @@ app.post('/api/chat', async (req, res) => {
       return res.status(response.status).json({ error: data.error?.message || 'API error' });
     }
 
-    res.json({ content: data.content[0].text });
+    const text = data?.content?.[0]?.text;
+    if (!text) {
+      console.error('Unexpected API response:', JSON.stringify(data).slice(0, 200));
+      return res.status(500).json({ error: 'Unexpected response from API. Check Railway logs.' });
+    }
+    res.json({ content: text });
 
   } catch (err) {
     console.error('API error:', err);
