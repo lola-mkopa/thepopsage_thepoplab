@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POP Lab — Thinking Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink: #EFBBCF;
+    --pink-deep: #E0A0BB;
+    --pink-light: #F9EBF2;
+    --pink-border: rgba(224,160,187,0.35);
+    --black: #18140F;
+    --off-white: #FAF7F3;
+    --warm-gray: #8A7E72;
+    --light-gray: #E8E2DA;
+    --border: rgba(24,20,15,0.1);
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    color: var(--black);
+  }
+
+  .screen { display: none; min-height: 100%; }
+  .screen.active { display: flex; }
+
+  /* ────────────────────────────────────────
+     SELECTION SCREEN
+  ──────────────────────────────────────── */
+
+  #selectScreen {
+    flex-direction: column;
+    align-items: center;
+    background: var(--pink);
+    padding: 0;
+  }
+
+  .sel-hero {
+    width: 100%;
+    padding: 64px 40px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .sel-eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(24,20,15,0.45);
+  }
+
+  .sel-title {
+    font-family: var(--serif);
+    font-size: clamp(52px, 8vw, 84px);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--black);
+  }
+
+  .sel-subtitle {
+    font-family: var(--serif);
+    font-size: clamp(15px, 2vw, 18px);
+    font-style: italic;
+    color: rgba(24,20,15,0.6);
+    max-width: 380px;
+    line-height: 1.55;
+    margin-top: 4px;
+  }
+
+  .sel-divider {
+    width: 40px;
+    height: 1px;
+    background: rgba(24,20,15,0.2);
+    margin: 8px auto 0;
+  }
+
+  .sel-body {
+    width: 100%;
+    flex: 1;
+    background: var(--off-white);
+    padding: 48px 40px 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .sel-prompt {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+  }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+    max-width: 720px;
+  }
+
+  @media (max-width: 560px) {
+    .pillars { grid-template-columns: 1fr; }
+    .sel-hero { padding: 48px 24px 36px; }
+    .sel-body { padding: 40px 24px 56px; }
+  }
+
+  .pillar-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px 24px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pillar-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--pink-deep);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+  }
+
+  .pillar-card:hover {
+    border-color: var(--pink-border);
+    box-shadow: 0 4px 20px rgba(224,160,187,0.15);
+    transform: translateY(-2px);
+  }
+
+  .pillar-card:hover::before { transform: scaleX(1); }
+  .pillar-card:active { transform: translateY(0); }
+
+  .pillar-num {
+    font-family: var(--serif);
+    font-size: 11px;
+    font-style: italic;
+    color: var(--pink-deep);
+    letter-spacing: 0.04em;
+  }
+
+  .pillar-name {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.2;
+  }
+
+  .pillar-situation {
+    font-size: 13px;
+    color: var(--warm-gray);
+    line-height: 1.65;
+    font-style: italic;
+    border-left: 2px solid var(--pink-border);
+    padding-left: 12px;
+  }
+
+  .pillar-cta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--pink-deep);
+    margin-top: 4px;
+    transition: gap 0.2s;
+  }
+
+  .pillar-card:hover .pillar-cta { gap: 10px; }
+
+  /* ────────────────────────────────────────
+     COMPANION SCREEN
+  ──────────────────────────────────────── */
+
+  #compScreen {
+    flex-direction: column;
+    background: var(--off-white);
+  }
+
+  .comp-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .comp-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--warm-gray);
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+    padding: 0;
+  }
+
+  .back-btn:hover { color: var(--black); }
+
+  .bar-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--border);
+  }
+
+  .bar-brand {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: 0.02em;
+  }
+
+  .bar-pillar {
+    font-family: var(--serif);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--warm-gray);
+  }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: var(--pink-light);
+    border: 1px solid var(--pink-border);
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pink-deep);
+  }
+
+  .live-dot {
+    width: 5px;
+    height: 5px;
+    background: var(--pink-deep);
+    border-radius: 50%;
+    animation: blink 2.2s ease-in-out infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1}50%{opacity:.25} }
+
+  .situation-bar {
+    padding: 14px 32px;
+    background: var(--pink-light);
+    border-bottom: 1px solid var(--pink-border);
+    flex-shrink: 0;
+  }
+
+  .situation-inner { max-width: 700px; }
+
+  .situation-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--pink-deep);
+    margin-bottom: 3px;
+  }
+
+  .situation-text {
+    font-family: var(--serif);
+    font-size: 14px;
+    font-style: italic;
+    color: var(--black);
+    line-height: 1.5;
+  }
+
+  /* Messages */
+  .msgs {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    scroll-behavior: smooth;
+  }
+
+  .msgs::-webkit-scrollbar { width: 4px; }
+  .msgs::-webkit-scrollbar-thumb { background: var(--light-gray); border-radius: 2px; }
+
+  .m-comp {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 640px;
+    animation: fadeUp .3s ease;
+  }
+
+  .m-comp-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--pink-deep);
+  }
+
+  .m-comp-body {
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--black);
+    white-space: pre-wrap;
+    padding-left: 16px;
+    border-left: 2px solid var(--pink-deep);
+  }
+
+  .m-user {
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    max-width: 520px;
+    animation: fadeUp .3s ease;
+  }
+
+  .m-user-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+  }
+
+  .m-user-body {
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--black);
+    white-space: pre-wrap;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 14px 18px;
+    text-align: left;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .m-typing {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 640px;
+    animation: fadeUp .3s ease;
+  }
+
+  .m-typing-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--pink-deep);
+  }
+
+  .typing-dots {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 14px 16px;
+    border-left: 2px solid var(--pink-deep);
+  }
+
+  .dot {
+    width: 5px;
+    height: 5px;
+    background: var(--warm-gray);
+    border-radius: 50%;
+    animation: dotBounce 1.3s ease-in-out infinite;
+  }
+
+  .dot:nth-child(2){animation-delay:.18s}.dot:nth-child(3){animation-delay:.36s}
+
+  @keyframes dotBounce {
+    0%,60%,100%{transform:translateY(0);opacity:.35}
+    30%{transform:translateY(-5px);opacity:1}
+  }
+
+  .input-zone {
+    padding: 20px 32px;
+    background: white;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .input-wrap {
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .input-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 12px 12px 12px 18px;
+    background: var(--off-white);
+    transition: border-color .2s;
+  }
+
+  .input-row:focus-within { border-color: var(--pink-deep); }
+
+  textarea {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--black);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    resize: none;
+    max-height: 100px;
+    min-height: 22px;
+    padding: 0;
+  }
+
+  textarea::placeholder { color: var(--warm-gray); font-style: italic; }
+
+  .send-btn {
+    padding: 8px 18px;
+    background: var(--black);
+    border: none;
+    border-radius: 2px;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: white;
+    cursor: pointer;
+    transition: background .15s, opacity .15s;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .send-btn:hover { background: #2A2520; }
+  .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .input-hint { font-size: 11px; color: var(--warm-gray); padding-left: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ── Selection Screen ── -->
+<div class="screen active" id="selectScreen">
+
+  <div class="sel-hero">
+    <div class="sel-eyebrow">Part of POP XP by The POP Sage</div>
+    <div class="sel-title">POP Lab</div>
+    <div class="sel-subtitle">The thinking companion for People professionals. Bring a real situation. Leave with a clearer mind.</div>
+    <div class="sel-divider"></div>
+  </div>
+
+  <div class="sel-body">
+    <div class="sel-prompt">Choose your situation</div>
+
+    <div class="pillars">
+
+      <div class="pillar-card" onclick="selectPillar('commercial_ally')">
+        <div class="pillar-num">Pillar one</div>
+        <div class="pillar-name">The Commercial Ally</div>
+        <div class="pillar-situation">"I've been asked to present the People plan to the leadership team and I don't know where to start."</div>
+        <div class="pillar-cta">Begin session <span>→</span></div>
+      </div>
+
+      <div class="pillar-card" onclick="selectPillar('trusted_advisor')">
+        <div class="pillar-num">Pillar two</div>
+        <div class="pillar-name">The Trusted Advisor</div>
+        <div class="pillar-situation">"A senior leader is asking me to do something I think is wrong."</div>
+        <div class="pillar-cta">Begin session <span>→</span></div>
+      </div>
+
+      <div class="pillar-card" onclick="selectPillar('growth_coach')">
+        <div class="pillar-num">Pillar three</div>
+        <div class="pillar-name">The Growth Coach</div>
+        <div class="pillar-situation">"A manager won't have an honest performance conversation with a struggling team member."</div>
+        <div class="pillar-cta">Begin session <span>→</span></div>
+      </div>
+
+      <div class="pillar-card" onclick="selectPillar('experience_shaper')">
+        <div class="pillar-num">Pillar four</div>
+        <div class="pillar-name">The Experience Shaper</div>
+        <div class="pillar-situation">"Our engagement scores are bad and the CEO wants us to do something about it — fast."</div>
+        <div class="pillar-cta">Begin session <span>→</span></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Companion Screen ── -->
+<div class="screen" id="compScreen" style="flex-direction:column;min-height:100vh;">
+
+  <div class="comp-bar">
+    <div class="comp-bar-left">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+      <div class="bar-divider"></div>
+      <div class="bar-brand">POP Lab</div>
+      <div class="bar-pillar" id="barPillar"></div>
+    </div>
+    <div class="live-badge"><div class="live-dot"></div>Session active</div>
+  </div>
+
+  <div class="situation-bar">
+    <div class="situation-inner">
+      <div class="situation-label">Your situation</div>
+      <div class="situation-text" id="situationText"></div>
+    </div>
+  </div>
+
+  <div class="msgs" id="msgs"></div>
+
+  <div class="input-zone">
+    <div class="input-wrap">
+      <div class="input-row">
+        <textarea id="inp" placeholder="Share your thinking…" rows="1"></textarea>
+        <button class="send-btn" id="sbtn">Send</button>
+      </div>
+      <div class="input-hint">Enter to send &middot; Shift+Enter for new line</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const PILLARS = {
+  commercial_ally: {
+    name: 'The Commercial Ally',
+    situation: '"I\'ve been asked to present the People plan to the leadership team and I don\'t know where to start."'
+  },
+  trusted_advisor: {
+    name: 'The Trusted Advisor',
+    situation: '"A senior leader is asking me to do something I think is wrong."'
+  },
+  growth_coach: {
+    name: 'The Growth Coach',
+    situation: '"A manager won\'t have an honest performance conversation with a struggling team member."'
+  },
+  experience_shaper: {
+    name: 'The Experience Shaper',
+    situation: '"Our engagement scores are bad and the CEO wants us to do something about it — fast."'
+  }
+};
+
+let currentPillar = null;
+let hist = [];
+let busy = false;
+
+const selectScreen = document.getElementById('selectScreen');
+const compScreen = document.getElementById('compScreen');
+const mc = document.getElementById('msgs');
+const inp = document.getElementById('inp');
+const sb = document.getElementById('sbtn');
+
+async function selectPillar(pillar) {
+  currentPillar = pillar;
+  hist = [];
+  mc.innerHTML = '';
+
+  document.getElementById('barPillar').textContent = '— ' + PILLARS[pillar].name;
+  document.getElementById('situationText').textContent = PILLARS[pillar].situation;
+
+  selectScreen.classList.remove('active');
+  compScreen.classList.add('active');
+  inp.focus();
+
+  try {
+    const res = await fetch(`/api/opening/${pillar}`);
+    const data = await res.json();
+    addCompMsg(data.content);
+    hist.push({ role: 'assistant', content: data.content });
+  } catch {
+    addCompMsg('Something went wrong loading this session. Please go back and try again.');
+  }
+}
+
+function goBack() {
+  compScreen.classList.remove('active');
+  selectScreen.classList.add('active');
+  currentPillar = null;
+  hist = [];
+  mc.innerHTML = '';
+}
+
+function addCompMsg(text) {
+  const w = document.createElement('div');
+  w.className = 'm-comp';
+
+  const label = document.createElement('div');
+  label.className = 'm-comp-label';
+  label.textContent = PILLARS[currentPillar]?.name || 'POP Lab';
+
+  const body = document.createElement('div');
+  body.className = 'm-comp-body';
+  body.textContent = text;
+
+  w.appendChild(label);
+  w.appendChild(body);
+  mc.appendChild(w);
+  mc.scrollTop = mc.scrollHeight;
+}
+
+function addUserMsg(text) {
+  const w = document.createElement('div');
+  w.className = 'm-user';
+
+  const label = document.createElement('div');
+  label.className = 'm-user-label';
+  label.textContent = 'You';
+
+  const body = document.createElement('div');
+  body.className = 'm-user-body';
+  body.textContent = text;
+
+  w.appendChild(label);
+  w.appendChild(body);
+  mc.appendChild(w);
+  mc.scrollTop = mc.scrollHeight;
+}
+
+function showTyping() {
+  const w = document.createElement('div');
+  w.className = 'm-typing';
+  w.id = 'ty';
+
+  const label = document.createElement('div');
+  label.className = 'm-typing-label';
+  label.textContent = PILLARS[currentPillar]?.name || 'POP Lab';
+
+  const dots = document.createElement('div');
+  dots.className = 'typing-dots';
+  [1,2,3].forEach(() => {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    dots.appendChild(d);
+  });
+
+  w.appendChild(label);
+  w.appendChild(dots);
+  mc.appendChild(w);
+  mc.scrollTop = mc.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('ty');
+  if (t) t.remove();
+}
+
+async function send(text) {
+  if (!text.trim() || busy || !currentPillar) return;
+  busy = true;
+  sb.disabled = true;
+
+  addUserMsg(text);
+  hist.push({ role: 'user', content: text });
+  inp.value = '';
+  inp.style.height = 'auto';
+  showTyping();
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pillar: currentPillar, messages: hist })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    removeTyping();
+    addCompMsg(data.content);
+    hist.push({ role: 'assistant', content: data.content });
+
+  } catch (err) {
+    removeTyping();
+    addCompMsg(err.message || 'Something went wrong. Please try again.');
+  }
+
+  busy = false;
+  sb.disabled = false;
+  inp.focus();
+}
+
+sb.addEventListener('click', () => send(inp.value));
+inp.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(inp.value); }
+});
+inp.addEventListener('input', () => {
+  inp.style.height = 'auto';
+  inp.style.height = Math.min(inp.scrollHeight, 100) + 'px';
+});
+</script>
+</body>
+</html>
