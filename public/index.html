@@ -37,15 +37,8 @@
   .screen.active { display: flex; }
 
   /* ────────────────────────────────────────
-     SELECTION SCREEN
+     SHARED HERO
   ──────────────────────────────────────── */
-
-  #selectScreen {
-    flex-direction: column;
-    align-items: center;
-    background: var(--pink);
-    padding: 0;
-  }
 
   .sel-hero {
     width: 100%;
@@ -55,6 +48,7 @@
     align-items: center;
     gap: 16px;
     text-align: center;
+    background: var(--pink);
   }
 
   .sel-eyebrow {
@@ -112,6 +106,22 @@
     color: var(--warm-gray);
   }
 
+  @media (max-width: 560px) {
+    .sel-hero { padding: 48px 24px 36px; }
+    .sel-body { padding: 40px 24px 56px; }
+  }
+
+  /* ────────────────────────────────────────
+     SCREEN 1 — PILLAR SELECTION
+  ──────────────────────────────────────── */
+
+  #pillarScreen {
+    flex-direction: column;
+    align-items: center;
+    background: var(--pink);
+    padding: 0;
+  }
+
   .pillars {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -122,8 +132,6 @@
 
   @media (max-width: 560px) {
     .pillars { grid-template-columns: 1fr; }
-    .sel-hero { padding: 48px 24px 36px; }
-    .sel-body { padding: 40px 24px 56px; }
   }
 
   .pillar-card {
@@ -135,7 +143,7 @@
     transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     position: relative;
     overflow: hidden;
   }
@@ -176,13 +184,19 @@
     line-height: 1.2;
   }
 
-  .pillar-situation {
-    font-size: 13px;
+  .pillar-desc {
+    font-size: 12px;
     color: var(--warm-gray);
-    line-height: 1.65;
-    font-style: italic;
-    border-left: 2px solid var(--pink-border);
-    padding-left: 12px;
+    line-height: 1.55;
+  }
+
+  .pillar-count {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--pink-deep);
+    margin-top: 4px;
   }
 
   .pillar-cta {
@@ -194,19 +208,209 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--pink-deep);
-    margin-top: 4px;
     transition: gap 0.2s;
   }
 
   .pillar-card:hover .pillar-cta { gap: 10px; }
 
   /* ────────────────────────────────────────
-     COMPANION SCREEN
+     SCREEN 2 — USE CASE SELECTION
+  ──────────────────────────────────────── */
+
+  #ucScreen {
+    flex-direction: column;
+    align-items: center;
+    background: var(--pink);
+    padding: 0;
+  }
+
+  .uc-bar {
+    width: 100%;
+    padding: 14px 40px;
+    background: rgba(239,187,207,0.7);
+    border-bottom: 1px solid rgba(24,20,15,0.08);
+    display: flex;
+    align-items: center;
+  }
+
+  @media (max-width: 560px) {
+    .uc-bar { padding: 14px 24px; }
+  }
+
+  .uc-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(24,20,15,0.5);
+    letter-spacing: 0.04em;
+    padding: 0;
+    transition: color 0.2s;
+  }
+
+  .uc-back:hover { color: var(--black); }
+
+  .uc-hero {
+    width: 100%;
+    padding: 40px 40px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+    background: var(--pink);
+  }
+
+  @media (max-width: 560px) {
+    .uc-hero { padding: 32px 24px 28px; }
+  }
+
+  .uc-eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(24,20,15,0.4);
+  }
+
+  .uc-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--black);
+  }
+
+  .uc-subtitle {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-style: italic;
+    color: rgba(24,20,15,0.55);
+    max-width: 360px;
+    line-height: 1.5;
+  }
+
+  .uc-body {
+    width: 100%;
+    flex: 1;
+    background: var(--off-white);
+    padding: 40px 40px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  @media (max-width: 560px) {
+    .uc-body { padding: 32px 24px 52px; }
+  }
+
+  .uc-prompt {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    align-self: flex-start;
+    max-width: 680px;
+    width: 100%;
+  }
+
+  .uc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 680px;
+  }
+
+  .uc-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px 24px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.15s, transform 0.12s;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .uc-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 3px;
+    background: var(--pink-deep);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.2s ease;
+  }
+
+  .uc-card:hover {
+    border-color: var(--pink-border);
+    box-shadow: 0 3px 14px rgba(224,160,187,0.12);
+    transform: translateX(2px);
+  }
+
+  .uc-card:hover::before { transform: scaleY(1); }
+  .uc-card:active { transform: translateX(0); }
+
+  .uc-card-num {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--light-gray);
+    flex-shrink: 0;
+    width: 28px;
+    line-height: 1;
+  }
+
+  .uc-card-content { flex: 1; }
+
+  .uc-card-situation {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-style: italic;
+    color: var(--black);
+    line-height: 1.5;
+  }
+
+  .uc-card-model {
+    font-size: 12px;
+    color: var(--warm-gray);
+    margin-top: 4px;
+    line-height: 1.45;
+  }
+
+  .uc-card-arrow {
+    font-size: 16px;
+    color: var(--pink-deep);
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .uc-card:hover .uc-card-arrow { opacity: 1; }
+
+  /* ────────────────────────────────────────
+     SCREEN 3 — COMPANION
   ──────────────────────────────────────── */
 
   #compScreen {
     flex-direction: column;
     background: var(--off-white);
+    min-height: 100vh;
   }
 
   .comp-bar {
@@ -312,7 +516,7 @@
     font-family: var(--serif);
     font-size: 14px;
     font-style: italic;
-    color: var(--black);
+    color: rgba(24,20,15,0.7);
     line-height: 1.5;
   }
 
@@ -320,120 +524,107 @@
   .msgs {
     flex: 1;
     overflow-y: auto;
-    padding: 40px 32px;
+    padding: 32px;
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 28px;
     scroll-behavior: smooth;
   }
-
-  .msgs::-webkit-scrollbar { width: 4px; }
-  .msgs::-webkit-scrollbar-thumb { background: var(--light-gray); border-radius: 2px; }
 
   .m-comp {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    max-width: 640px;
-    animation: fadeUp .3s ease;
+    gap: 6px;
+    max-width: 680px;
   }
 
   .m-comp-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-family: var(--serif);
+    font-size: 11px;
+    font-style: italic;
     color: var(--pink-deep);
+    letter-spacing: 0.02em;
   }
 
   .m-comp-body {
-    font-family: var(--serif);
-    font-size: 16px;
-    line-height: 1.8;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 2px 12px 12px 12px;
+    padding: 16px 20px;
+    font-size: 14px;
+    line-height: 1.7;
     color: var(--black);
     white-space: pre-wrap;
-    padding-left: 16px;
-    border-left: 2px solid var(--pink-deep);
   }
 
   .m-user {
-    align-self: flex-end;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
     gap: 6px;
-    max-width: 520px;
-    animation: fadeUp .3s ease;
+    align-items: flex-end;
+    align-self: flex-end;
+    max-width: 580px;
   }
 
   .m-user-label {
-    font-size: 10px;
+    font-family: var(--sans);
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--warm-gray);
   }
 
   .m-user-body {
-    font-family: var(--sans);
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--black);
-    white-space: pre-wrap;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 2px;
+    background: var(--black);
+    color: var(--off-white);
+    border-radius: 12px 2px 12px 12px;
     padding: 14px 18px;
-    text-align: left;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    font-size: 14px;
+    line-height: 1.65;
+    white-space: pre-wrap;
   }
 
   .m-typing {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    max-width: 640px;
-    animation: fadeUp .3s ease;
+    gap: 6px;
+    max-width: 680px;
   }
 
   .m-typing-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-family: var(--serif);
+    font-size: 11px;
+    font-style: italic;
     color: var(--pink-deep);
   }
 
   .typing-dots {
     display: flex;
     align-items: center;
-    gap: 5px;
-    padding: 14px 16px;
-    border-left: 2px solid var(--pink-deep);
+    gap: 4px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 2px 12px 12px 12px;
+    padding: 14px 18px;
+    width: fit-content;
   }
 
   .dot {
-    width: 5px;
-    height: 5px;
-    background: var(--warm-gray);
+    width: 6px; height: 6px;
+    background: var(--light-gray);
     border-radius: 50%;
-    animation: dotBounce 1.3s ease-in-out infinite;
+    animation: bounce 1.2s ease-in-out infinite;
   }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
 
-  .dot:nth-child(2){animation-delay:.18s}.dot:nth-child(3){animation-delay:.36s}
+  @keyframes bounce { 0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)} }
 
-  @keyframes dotBounce {
-    0%,60%,100%{transform:translateY(0);opacity:.35}
-    30%{transform:translateY(-5px);opacity:1}
-  }
-
+  /* Input */
   .input-zone {
-    padding: 20px 32px;
-    background: white;
+    padding: 20px 32px 28px;
+    background: var(--off-white);
     border-top: 1px solid var(--border);
     flex-shrink: 0;
   }
@@ -500,9 +691,8 @@
 </head>
 <body>
 
-<!-- ── Selection Screen ── -->
-<div class="screen active" id="selectScreen">
-
+<!-- ── Screen 1: Pillar Selection ── -->
+<div class="screen active" id="pillarScreen">
   <div class="sel-hero">
     <div class="sel-eyebrow">Part of POP XP by The POP Sage</div>
     <div class="sel-title">POP Lab</div>
@@ -511,49 +701,66 @@
   </div>
 
   <div class="sel-body">
-    <div class="sel-prompt">Choose your situation</div>
+    <div class="sel-prompt">Choose your pillar</div>
 
     <div class="pillars">
-
       <div class="pillar-card" onclick="selectPillar('commercial_ally')">
         <div class="pillar-num">Pillar one</div>
         <div class="pillar-name">The Commercial Ally</div>
-        <div class="pillar-situation">"I've been asked to present the People plan to the leadership team and I don't know where to start."</div>
-        <div class="pillar-cta">Begin session <span>→</span></div>
+        <div class="pillar-desc">Thinks like a business person. Connects People recommendations to commercial reality.</div>
+        <div class="pillar-cta">Choose situation <span>→</span></div>
       </div>
 
       <div class="pillar-card" onclick="selectPillar('trusted_advisor')">
         <div class="pillar-num">Pillar two</div>
         <div class="pillar-name">The Trusted Advisor</div>
-        <div class="pillar-situation">"A senior leader is asking me to do something I think is wrong."</div>
-        <div class="pillar-cta">Begin session <span>→</span></div>
+        <div class="pillar-desc">Builds influence without authority. Diagnoses before reacting.</div>
+        <div class="pillar-cta">Choose situation <span>→</span></div>
       </div>
 
       <div class="pillar-card" onclick="selectPillar('growth_coach')">
         <div class="pillar-num">Pillar three</div>
         <div class="pillar-name">The Growth Coach</div>
-        <div class="pillar-situation">"A manager won't have an honest performance conversation with a struggling team member."</div>
-        <div class="pillar-cta">Begin session <span>→</span></div>
+        <div class="pillar-desc">Coaches managers with credibility. Enables performance and talent development.</div>
+        <div class="pillar-cta">Choose situation <span>→</span></div>
       </div>
 
       <div class="pillar-card" onclick="selectPillar('experience_shaper')">
         <div class="pillar-num">Pillar four</div>
         <div class="pillar-name">The Experience Shaper</div>
-        <div class="pillar-situation">"Our engagement scores are bad and the CEO wants us to do something about it — fast."</div>
-        <div class="pillar-cta">Begin session <span>→</span></div>
+        <div class="pillar-desc">Thinks like a product manager. Designs employee experiences, not just HR services.</div>
+        <div class="pillar-cta">Choose situation <span>→</span></div>
       </div>
-
     </div>
   </div>
-
 </div>
 
-<!-- ── Companion Screen ── -->
-<div class="screen" id="compScreen" style="flex-direction:column;min-height:100vh;">
+<!-- ── Screen 2: Use Case Selection ── -->
+<div class="screen" id="ucScreen">
+  <div class="uc-bar">
+    <button class="uc-back" onclick="goToPillars()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      All pillars
+    </button>
+  </div>
 
+  <div class="uc-hero">
+    <div class="uc-eyebrow" id="ucEyebrow">Pillar one</div>
+    <div class="uc-title" id="ucTitle">The Commercial Ally</div>
+    <div class="uc-subtitle" id="ucSubtitle">Four situations. Choose the one closest to yours.</div>
+  </div>
+
+  <div class="uc-body">
+    <div class="uc-prompt">Choose your situation</div>
+    <div class="uc-list" id="ucList"></div>
+  </div>
+</div>
+
+<!-- ── Screen 3: Companion ── -->
+<div class="screen" id="compScreen">
   <div class="comp-bar">
     <div class="comp-bar-left">
-      <button class="back-btn" onclick="goBack()">
+      <button class="back-btn" onclick="goToUCs()">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         Back
       </button>
@@ -582,53 +789,194 @@
       <div class="input-hint">Enter to send &middot; Shift+Enter for new line</div>
     </div>
   </div>
-
 </div>
 
 <script>
+// ── Data ───────────────────────────────────────────────────────────────────────
+
 const PILLARS = {
   commercial_ally: {
+    num: 'Pillar one',
     name: 'The Commercial Ally',
-    situation: '"I\'ve been asked to present the People plan to the leadership team and I don\'t know where to start."'
+    subtitle: 'Connects People work to commercial reality. Four situations — choose the one closest to yours.',
+    ucs: [
+      {
+        key: 'commercial_ally_uc1',
+        situation: '"I\'ve been asked to present the People plan to the leadership team and I don\'t know where to start."',
+        model: 'Connecting People strategy to business strategy'
+      },
+      {
+        key: 'commercial_ally_uc2',
+        situation: '"The CEO doesn\'t think HR is strategic — they see us as admin."',
+        model: 'Building credibility through evidence, not explanation'
+      },
+      {
+        key: 'commercial_ally_uc3',
+        situation: '"I need to get budget for a People initiative but I can\'t make the business case."',
+        model: 'ROI logic and linking People investment to business outcomes'
+      },
+      {
+        key: 'commercial_ally_uc4',
+        situation: '"I\'ve built a People roadmap but I can\'t get my stakeholders aligned on it."',
+        model: 'Stakeholder alignment — built before the roadmap is finalised'
+      }
+    ]
   },
   trusted_advisor: {
+    num: 'Pillar two',
     name: 'The Trusted Advisor',
-    situation: '"A senior leader is asking me to do something I think is wrong."'
+    subtitle: 'Builds influence without authority. Diagnoses before reacting. Choose the situation closest to yours.',
+    ucs: [
+      {
+        key: 'trusted_advisor_uc1',
+        situation: '"A senior leader is asking me to do something I think is wrong."',
+        model: 'Balanced advocacy under authority pressure'
+      },
+      {
+        key: 'trusted_advisor_uc2',
+        situation: '"A manager has brought me a performance problem but I think the real issue is something else."',
+        model: 'Diagnostic discipline — separating presenting problem from root cause'
+      },
+      {
+        key: 'trusted_advisor_uc3',
+        situation: '"I need to make a People decision but I don\'t have enough data to be sure."',
+        model: 'Decision-making under uncertainty'
+      },
+      {
+        key: 'trusted_advisor_uc4',
+        situation: '"I\'ve been in this role three months and nobody treats me as a thought partner."',
+        model: 'Building credibility and influence from scratch'
+      }
+    ]
   },
   growth_coach: {
+    num: 'Pillar three',
     name: 'The Growth Coach',
-    situation: '"A manager won\'t have an honest performance conversation with a struggling team member."'
+    subtitle: 'Coaches managers with credibility. Enables performance at every level. Choose the situation closest to yours.',
+    ucs: [
+      {
+        key: 'growth_coach_uc1',
+        situation: '"A manager won\'t have an honest performance conversation with a struggling team member."',
+        model: 'Coaching managers through avoidance — diagnose before coaching'
+      },
+      {
+        key: 'growth_coach_uc2',
+        situation: '"A high-performer just resigned and the manager only told me after it was too late."',
+        model: 'Talent visibility — proactive vs. reactive people management'
+      },
+      {
+        key: 'growth_coach_uc3',
+        situation: '"Leadership wants to do a reorg but the rationale isn\'t clear to me."',
+        model: 'Structure as a tool — ask the right questions before executing'
+      },
+      {
+        key: 'growth_coach_uc4',
+        situation: '"Our performance management process isn\'t working — everyone hates it, managers game it, ICs don\'t trust it."',
+        model: 'PM design thinking — diagnose what\'s broken before rebuilding'
+      }
+    ]
   },
   experience_shaper: {
+    num: 'Pillar four',
     name: 'The Experience Shaper',
-    situation: '"Our engagement scores are bad and the CEO wants us to do something about it — fast."'
+    subtitle: 'Thinks like a product manager. Designs employee experiences. Choose the situation closest to yours.',
+    ucs: [
+      {
+        key: 'experience_shaper_uc1',
+        situation: '"Our engagement scores are bad and the CEO wants us to do something about it — fast."',
+        model: 'Resisting reactive solutioning — diagnose before designing'
+      },
+      {
+        key: 'experience_shaper_uc2',
+        situation: '"I\'ve been asked to fix onboarding — no brief, no budget, no clear owner."',
+        model: 'EX design from first principles — mandate before design'
+      },
+      {
+        key: 'experience_shaper_uc3',
+        situation: '"Our HR processes are a constant source of complaints — everything is slow, confusing, or manual."',
+        model: 'Process triage — prioritise by cost, diagnose before redesigning'
+      },
+      {
+        key: 'experience_shaper_uc4',
+        situation: '"I want to pitch an EX initiative to leadership but I don\'t know how to frame it."',
+        model: 'Commercial framing of EX — connecting experience to business outcomes'
+      }
+    ]
   }
 };
 
+// ── State ─────────────────────────────────────────────────────────────────────
+
 let currentPillar = null;
+let currentKey = null;
 let hist = [];
 let busy = false;
 
-const selectScreen = document.getElementById('selectScreen');
+// ── Screens ───────────────────────────────────────────────────────────────────
+
+const pillarScreen = document.getElementById('pillarScreen');
+const ucScreen = document.getElementById('ucScreen');
 const compScreen = document.getElementById('compScreen');
 const mc = document.getElementById('msgs');
 const inp = document.getElementById('inp');
 const sb = document.getElementById('sbtn');
 
-async function selectPillar(pillar) {
-  currentPillar = pillar;
+function show(screen) {
+  [pillarScreen, ucScreen, compScreen].forEach(s => s.classList.remove('active'));
+  screen.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+
+function selectPillar(pillarKey) {
+  currentPillar = pillarKey;
+  const p = PILLARS[pillarKey];
+
+  document.getElementById('ucEyebrow').textContent = p.num;
+  document.getElementById('ucTitle').textContent = p.name;
+  document.getElementById('ucSubtitle').textContent = p.subtitle;
+
+  const list = document.getElementById('ucList');
+  list.innerHTML = '';
+
+  p.ucs.forEach((uc, i) => {
+    const card = document.createElement('div');
+    card.className = 'uc-card';
+    card.innerHTML = `
+      <div class="uc-card-num">${i + 1}</div>
+      <div class="uc-card-content">
+        <div class="uc-card-situation">${uc.situation}</div>
+        <div class="uc-card-model">${uc.model}</div>
+      </div>
+      <div class="uc-card-arrow">→</div>
+    `;
+    card.addEventListener('click', () => selectUC(uc.key, uc.situation));
+    list.appendChild(card);
+  });
+
+  show(ucScreen);
+}
+
+function goToPillars() {
+  currentPillar = null;
+  show(pillarScreen);
+}
+
+async function selectUC(key, situation) {
+  currentKey = key;
   hist = [];
   mc.innerHTML = '';
 
-  document.getElementById('barPillar').textContent = '— ' + PILLARS[pillar].name;
-  document.getElementById('situationText').textContent = PILLARS[pillar].situation;
+  const pillar = PILLARS[currentPillar];
+  document.getElementById('barPillar').textContent = '— ' + pillar.name;
+  document.getElementById('situationText').textContent = situation;
 
-  selectScreen.classList.remove('active');
-  compScreen.classList.add('active');
+  show(compScreen);
   inp.focus();
 
   try {
-    const res = await fetch(`/api/opening/${pillar}`);
+    const res = await fetch(`/api/opening/${key}`);
     const data = await res.json();
     addCompMsg(data.content);
     hist.push({ role: 'assistant', content: data.content });
@@ -637,13 +985,15 @@ async function selectPillar(pillar) {
   }
 }
 
-function goBack() {
+function goToUCs() {
   compScreen.classList.remove('active');
-  selectScreen.classList.add('active');
-  currentPillar = null;
+  show(ucScreen);
+  currentKey = null;
   hist = [];
   mc.innerHTML = '';
 }
+
+// ── Messages ──────────────────────────────────────────────────────────────────
 
 function addCompMsg(text) {
   const w = document.createElement('div');
@@ -651,7 +1001,7 @@ function addCompMsg(text) {
 
   const label = document.createElement('div');
   label.className = 'm-comp-label';
-  label.textContent = PILLARS[currentPillar]?.name || 'POP Lab';
+  label.textContent = currentPillar ? PILLARS[currentPillar].name : 'POP Lab';
 
   const body = document.createElement('div');
   body.className = 'm-comp-body';
@@ -688,7 +1038,7 @@ function showTyping() {
 
   const label = document.createElement('div');
   label.className = 'm-typing-label';
-  label.textContent = PILLARS[currentPillar]?.name || 'POP Lab';
+  label.textContent = currentPillar ? PILLARS[currentPillar].name : 'POP Lab';
 
   const dots = document.createElement('div');
   dots.className = 'typing-dots';
@@ -709,8 +1059,10 @@ function removeTyping() {
   if (t) t.remove();
 }
 
+// ── Send ──────────────────────────────────────────────────────────────────────
+
 async function send(text) {
-  if (!text.trim() || busy || !currentPillar) return;
+  if (!text.trim() || busy || !currentKey) return;
   busy = true;
   sb.disabled = true;
 
@@ -724,7 +1076,7 @@ async function send(text) {
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pillar: currentPillar, messages: hist })
+      body: JSON.stringify({ key: currentKey, messages: hist })
     });
 
     const data = await res.json();
