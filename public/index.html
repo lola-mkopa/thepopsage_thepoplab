@@ -370,7 +370,7 @@
     font-family: var(--serif);
     font-size: 22px;
     font-weight: 900;
-    color: var(--light-gray);
+    color: rgba(138,126,114,0.5);
     flex-shrink: 0;
     width: 28px;
     line-height: 1;
@@ -489,10 +489,7 @@
     height: 5px;
     background: var(--pink-deep);
     border-radius: 50%;
-    animation: blink 2.2s ease-in-out infinite;
   }
-
-  @keyframes blink { 0%,100%{opacity:1}50%{opacity:.25} }
 
   .situation-bar {
     padding: 14px 32px;
@@ -583,6 +580,32 @@
     font-size: 14px;
     line-height: 1.65;
     white-space: pre-wrap;
+  }
+
+  .m-error {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 680px;
+  }
+
+  .m-error-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #B5793A;
+  }
+
+  .m-error-body {
+    background: #FBF2E4;
+    border: 1px solid rgba(181,121,58,0.35);
+    border-radius: 2px 12px 12px 12px;
+    padding: 16px 20px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--black);
   }
 
   .m-typing {
@@ -721,14 +744,14 @@
       <div class="pillar-card" onclick="selectPillar('growth_coach')">
         <div class="pillar-num">Pillar 03</div>
         <div class="pillar-name">The Growth Coach</div>
-        <div class="pillar-desc">Coaches managers with credibility. Enables performance and talent development.</div>
+        <div class="pillar-desc">Coaches managers with credibility. Enables performance at every level.</div>
         <div class="pillar-cta">Choose situation <span>→</span></div>
       </div>
 
       <div class="pillar-card" onclick="selectPillar('experience_shaper')">
         <div class="pillar-num">Pillar 04</div>
         <div class="pillar-name">The Experience Shaper</div>
-        <div class="pillar-desc">Thinks like a product manager. Designs employee experiences, not just HR services.</div>
+        <div class="pillar-desc">Thinks like a product manager. Designs experience, not HR services.</div>
         <div class="pillar-cta">Choose situation <span>→</span></div>
       </div>
     </div>
@@ -747,7 +770,7 @@
   <div class="uc-hero">
     <div class="uc-eyebrow" id="ucEyebrow">Pillar 01</div>
     <div class="uc-title" id="ucTitle">The Commercial Ally</div>
-    <div class="uc-subtitle" id="ucSubtitle">Four situations. Choose the one closest to yours.</div>
+    <div class="uc-subtitle" id="ucSubtitle"></div>
   </div>
 
   <div class="uc-body">
@@ -981,7 +1004,7 @@ async function selectUC(key, situation) {
     addCompMsg(data.content);
     hist.push({ role: 'assistant', content: data.content });
   } catch {
-    addCompMsg('Something went wrong loading this session. Please go back and try again.');
+    addErrorMsg('Something went wrong loading this session. Please go back and try again.');
   }
 }
 
@@ -1005,6 +1028,24 @@ function addCompMsg(text) {
 
   const body = document.createElement('div');
   body.className = 'm-comp-body';
+  body.textContent = text;
+
+  w.appendChild(label);
+  w.appendChild(body);
+  mc.appendChild(w);
+  mc.scrollTop = mc.scrollHeight;
+}
+
+function addErrorMsg(text) {
+  const w = document.createElement('div');
+  w.className = 'm-error';
+
+  const label = document.createElement('div');
+  label.className = 'm-error-label';
+  label.textContent = 'System';
+
+  const body = document.createElement('div');
+  body.className = 'm-error-body';
   body.textContent = text;
 
   w.appendChild(label);
@@ -1088,7 +1129,7 @@ async function send(text) {
 
   } catch (err) {
     removeTyping();
-    addCompMsg(err.message || 'Something went wrong. Please try again.');
+    addErrorMsg(err.message || 'Something went wrong. Please try again.');
   }
 
   busy = false;
