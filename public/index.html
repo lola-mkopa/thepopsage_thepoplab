@@ -710,6 +710,79 @@
   .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
   .input-hint { font-size: 11px; color: var(--warm-gray); padding-left: 2px; }
+
+  /* ── Email gate ── */
+  .m-gate {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 680px;
+  }
+
+  .m-gate-label {
+    font-family: var(--serif);
+    font-size: 11px;
+    font-style: italic;
+    color: var(--pink-deep);
+    letter-spacing: 0.02em;
+  }
+
+  .m-gate-body {
+    background: var(--pink-light);
+    border: 1px solid var(--pink-border);
+    border-radius: 2px 12px 12px 12px;
+    padding: 20px 22px;
+  }
+
+  .gate-text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--black);
+    margin-bottom: 14px;
+  }
+
+  .gate-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .gate-input {
+    flex: 1;
+    font-family: var(--sans);
+    font-size: 14px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    background: white;
+    color: var(--black);
+  }
+
+  .gate-input::placeholder { color: var(--warm-gray); }
+
+  .gate-btn {
+    padding: 10px 18px;
+    background: var(--black);
+    border: none;
+    border-radius: 2px;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s;
+  }
+
+  .gate-btn:hover { background: #2A2520; }
+  .gate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .gate-error {
+    font-size: 12px;
+    color: #B5793A;
+    margin-top: 8px;
+  }
 </style>
 </head>
 <body>
@@ -935,6 +1008,20 @@ let currentKey = null;
 let hist = [];
 let busy = false;
 
+// ── Soft gate ─────────────────────────────────────────────────────────────────
+// Free preview: opening message + this many user turns, then ask for an email
+// to continue. Same Formspree endpoint used on the Academy notify-me forms.
+
+const FREE_TURNS = 2;
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xwvgbzew';
+
+let unlocked = localStorage.getItem('popxp_unlocked') === 'true';
+let pendingMessage = null;
+
+function userTurnCount() {
+  return hist.filter(m => m.role === 'user').length;
+}
+
 // ── Screens ───────────────────────────────────────────────────────────────────
 
 const pillarScreen = document.getElementById('pillarScreen');
@@ -1014,6 +1101,7 @@ function goToUCs() {
   currentKey = null;
   hist = [];
   mc.innerHTML = '';
+  pendingMessage = null;
 }
 
 // ── Messages ──────────────────────────────────────────────────────────────────
@@ -1100,10 +1188,94 @@ function removeTyping() {
   if (t) t.remove();
 }
 
+// ── Email gate ────────────────────────────────────────────────────────────────
+
+function showGate() {
+  const w = document.createElement('div');
+  w.className = 'm-gate';
+  w.id = 'gateCard';
+
+  const label = document.createElement('div');
+  label.className = 'm-gate-label';
+  label.textContent = 'POP Lab';
+
+  const body = document.createElement('div');
+  body.className = 'm-gate-body';
+  body.innerHTML = `
+    <div class="gate-text">You're clearly getting somewhere with this. Drop your email to keep the conversation going — we'll also let you know the moment new pillars launch.</div>
+    <div class="gate-row">
+      <input class="gate-input" id="gateEmail" type="email" placeholder="you@company.com" required>
+      <button class="gate-btn" id="gateBtn">Continue</button>
+    </div>
+    <div class="gate-error" id="gateError" style="display:none;"></div>
+  `;
+
+  w.appendChild(label);
+  w.appendChild(body);
+  mc.appendChild(w);
+  mc.scrollTop = mc.scrollHeight;
+
+  const gateBtn = document.getElementById('gateBtn');
+  const gateEmail = document.getElementById('gateEmail');
+  const gateError = document.getElementById('gateError');
+
+  const submit = () => {
+    const email = gateEmail.value.trim();
+    if (!email || !email.includes('@')) {
+      gateError.textContent = 'Enter a valid email to continue.';
+      gateError.style.display = 'block';
+      return;
+    }
+    gateBtn.disabled = true;
+    gateBtn.textContent = 'One sec…';
+
+    fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        email,
+        source: 'POP Lab',
+        pillar: currentPillar ? PILLARS[currentPillar].name : '',
+        use_case: currentKey || ''
+      })
+    })
+      .then(() => {
+        unlocked = true;
+        localStorage.setItem('popxp_unlocked', 'true');
+        localStorage.setItem('popxp_email', email);
+        w.remove();
+        if (pendingMessage) {
+          const toSend = pendingMessage;
+          pendingMessage = null;
+          send(toSend);
+        }
+      })
+      .catch(() => {
+        gateError.textContent = 'Something went wrong — please try again.';
+        gateError.style.display = 'block';
+        gateBtn.disabled = false;
+        gateBtn.textContent = 'Continue';
+      });
+  };
+
+  gateBtn.addEventListener('click', submit);
+  gateEmail.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
+  gateEmail.focus();
+}
+
 // ── Send ──────────────────────────────────────────────────────────────────────
 
 async function send(text) {
   if (!text.trim() || busy || !currentKey) return;
+
+  if (!unlocked && userTurnCount() >= FREE_TURNS) {
+    pendingMessage = text;
+    inp.value = '';
+    inp.style.height = 'auto';
+    showGate();
+    return;
+  }
+
   busy = true;
   sb.disabled = true;
 
